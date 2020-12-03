@@ -1,0 +1,3 @@
+.html	HTMLHttpServlet
+.text	TextHttpServlet
+.xsl	XSLHttpServlet
