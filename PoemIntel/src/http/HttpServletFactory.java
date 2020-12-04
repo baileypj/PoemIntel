@@ -53,7 +53,7 @@ public class HttpServletFactory
    * @param in The HttpInputStream to read from
    * @param out The HttpOutputStream to write to
    */
-  public HttpServlet createServlet(HttpRequest req, HttpInputStream in, HttpOutputStream out)
+  public HttpServlet createServlet(HttpRequest req, HttpInputStream in, HttpOutputStream out) throws Exception
   {
     HttpServlet servlet;
     String className, ext, fname;
@@ -64,29 +64,16 @@ public class HttpServletFactory
     className = associations.getValue(ext);
 
     servlet = null;
-    if (className == null)
-    {
-      new HttpResponse().sendError(HttpResponse.SC_FORBIDDEN, out);
-    }
-    else
-    {
-      try
-      {
-        // Get class of servlet from the associations.dat
-        Class<?> servlet_class = Class.forName("http." + className);
 
-        // Get constructor for class of servlet
-        Constructor<?> servlet_constructor = servlet_class
-            .getConstructor(new Class[] {HttpInputStream.class, HttpOutputStream.class});
+    // Get class of servlet from the associations.dat
+    Class<?> servlet_class = Class.forName("http." + className);
 
-        // Create Servlet
-        servlet = (HttpServlet) servlet_constructor.newInstance(in, out);
-      }
-      catch (Exception e)
-      {
-        new HttpResponse().sendError(HttpResponse.SC_FORBIDDEN, out);
-      }
-    }
+    // Get constructor for class of servlet
+    Constructor<?> servlet_constructor =
+        servlet_class.getConstructor(new Class[] {HttpInputStream.class, HttpOutputStream.class});
+
+    // Create Servlet
+    servlet = (HttpServlet) servlet_constructor.newInstance(in, out);
     return servlet;
   }
 

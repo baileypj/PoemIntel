@@ -44,7 +44,7 @@ public class HttpServer implements Runnable
     Handler logHandler;
 
     // Setup the logging system
-    logger = Logger.getLogger("edu.jmu.cs");
+    logger = Logger.getLogger("PoemIntelServer");
     try
     {
       logHandler = new FileHandler("log.txt");
@@ -90,6 +90,24 @@ public class HttpServer implements Runnable
   public HttpServer() throws IOException
   {
     serverSocket = new ServerSocket(8080);
+
+    // Setup the logging system
+    logger = Logger.getLogger("PoemIntelServer");
+    try
+    {
+      Handler logHandler = new FileHandler("log.txt");
+      logHandler.setFormatter(new SimpleFormatter());
+      logger.addHandler(logHandler);
+      logger.setLevel(Level.FINE);
+      logger.setUseParentHandlers(false);
+    }
+    catch (Exception e)
+    {
+      // The FileHandler couldn't be constructed or the Level was bad
+      // so use the default ConsoleHandler (at the default Level.INFO)
+      logger.setUseParentHandlers(true);
+    }
+
     logger.log(Level.INFO, "Created Server Socket on 8080");
 
     threadPool = Executors.newFixedThreadPool(MAX_THREADS);

@@ -61,6 +61,11 @@ public class HttpRequest extends HttpMessage
       return path;
   }
 
+  public NameValueMap getQueryParameters()
+  {
+    return queryParameters;
+  }
+
   /**
    * Read this HttpRequest (up to, but not including, the
    * content).
@@ -151,9 +156,7 @@ public class HttpRequest extends HttpMessage
 
     s = "Method: \n\t" + getMethod() + "\n";
     s += "URI: \n\t" + getRequestURI() + "\n";
-
-    s += "Parameters:\n" + queryString + "\n";
-
+    s += "Parameters: \n\t" + queryString + "\n";
     s += "Headers:\n";
     i = getHeaderNames();
     while (i.hasNext())
