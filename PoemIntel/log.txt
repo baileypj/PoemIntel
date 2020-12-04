@@ -1,0 +1,42 @@
+Dec 03, 2020 7:32:52 PM http.HttpServer <init>
+INFO: Created Server Socket on 8080
+Dec 03, 2020 7:32:53 PM http.HttpServer run
+INFO: Accepted a connection
+Dec 03, 2020 7:32:53 PM http.HttpConnectionHandler run
+CONFIG: Method: 
+	GET
+URI: 
+	/test.list
+Parameters: 
+	null
+Headers:
+	Cookie	 csrftoken=6ZMA71iPESx6ji9mSdBshtldJfjwZZzpBIroToy51bk9HRYLL1b6kPy2WP300Yso
+	Accept	 text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+	Upgrade-Insecure-Requests	 1
+	User-Agent	 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv83.0) Gecko/20100101 Firefox/83.0
+	Connection	 keep-alive
+	Host	 127.0.0.18080
+	Accept-Language	 en-US,en;q=0.5
+	Accept-Encoding	 gzip, deflate
+	Content-Length	-1
+
+Dec 03, 2020 7:32:57 PM http.HttpServer run
+INFO: Accepted a connection
+Dec 03, 2020 7:32:57 PM http.HttpConnectionHandler run
+CONFIG: Method: 
+	GET
+URI: 
+	/test.poem
+Parameters: 
+	null
+Headers:
+	Cookie	 csrftoken=6ZMA71iPESx6ji9mSdBshtldJfjwZZzpBIroToy51bk9HRYLL1b6kPy2WP300Yso
+	Accept	 text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+	Upgrade-Insecure-Requests	 1
+	User-Agent	 Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv83.0) Gecko/20100101 Firefox/83.0
+	Connection	 keep-alive
+	Host	 127.0.0.18080
+	Accept-Language	 en-US,en;q=0.5
+	Accept-Encoding	 gzip, deflate
+	Content-Length	-1
+
