@@ -7,16 +7,13 @@
 <xs:element name="year" type="xs:string"/>
 <xs:element name="body" type="xs:string"/>
 
-<!-- definition of attributes -->
-<xs:attribute name="poemid" type="xs:positiveInteger"/>
-
 <!-- definition of complex elements -->
 <xs:element name="pubInfo">
   <xs:complexType>
     <xs:sequence>
-      <xs:element ref="title"/>
-      <xs:element ref="author"/>
-      <xs:element ref="year"/>
+      <xs:element ref="title" use="required"/>
+      <xs:element ref="author" use="required"/>
+      <xs:element ref="year" use="required"/>
     </xs:sequence>
   </xs:complexType>
 </xs:element>
@@ -27,7 +24,6 @@
       <xs:element ref="pubInfo"/>
       <xs:element ref="body"/>
     </xs:sequence>
-    <xs:attribute ref="poemid" use="required"/>
   </xs:complexType>
 </xs:element>
 
