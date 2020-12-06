@@ -24,6 +24,7 @@ public class HttpServer implements Runnable
   protected static final String serverAddress = "127.0.0.1";
   protected static final int serverPort = 8080;
   protected static final String loggerName = "PoemIntelServer";
+  protected static final String poemDatabase = "poems.xml";
 
   private volatile boolean keepRunning;
   private final ExecutorService threadPool;

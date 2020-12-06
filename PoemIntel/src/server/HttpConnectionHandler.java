@@ -31,7 +31,7 @@ public class HttpConnectionHandler implements Runnable
   public HttpConnectionHandler(Socket s)
   {
     // Setup the logging system
-    logger = Logger.getLogger("PoemIntelServer");
+    logger = Logger.getLogger(HttpServer.loggerName);
 
     socket = s;
   }

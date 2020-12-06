@@ -40,7 +40,7 @@ public class ServerRunTest
     // 127.0.0.1:8080/test.xsl
 
     // Just run for 20 seconds
-    Thread.sleep(10000);
+    Thread.sleep(20000);
 
     server.stop();
   }

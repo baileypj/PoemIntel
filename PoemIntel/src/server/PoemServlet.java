@@ -37,15 +37,13 @@ public class PoemServlet extends AbstractHttpServlet
         security.checkRead(uri);
 
       // Get poem name
-      String poemRequestName = FileTyper.getFileName(uri);
-      // TODO TODO TODO WILL BE ID OR NAME OR WHATEVER
-      // WE WILL BE USING TO RETRIEVE THE POEM FROM THE FILE
+      String poemName = FileTyper.getFileName(uri);
 
       // Get query parameters
       queryParameters = req.getQueryParameters();
 
       // Set the content
-      content = PoemResponseFactory.createGETResponse(poemRequestName, queryParameters).getBytes();
+      content = PoemResponseFactory.createGETResponse(poemName, queryParameters).getBytes();
 
       // Set the status
       res.setStatus(HttpResponse.SC_OK);

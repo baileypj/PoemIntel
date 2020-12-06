@@ -405,5 +405,5 @@
 .z	application/x-compressed
 .zip	application/zip
 .zoo	application/octet-stream
-.list	text/plain
-.poem	text/plain
+.list	text/xml
+.poem	text/xml
