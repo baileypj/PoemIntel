@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.OutputStream;
 import java.io.PrintStream;

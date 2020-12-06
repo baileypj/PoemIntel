@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import http.HttpServer;
+import server.HttpServer;
 
 public class ServerRunTest
 {
@@ -36,7 +36,6 @@ public class ServerRunTest
     // 127.0.0.1:8080/test.asdf
 
     // 127.0.0.1:8080/test.list
-
 
     // 127.0.0.1:8080/test.xsl
 

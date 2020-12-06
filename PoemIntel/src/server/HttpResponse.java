@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.IOException;
 import java.text.NumberFormat;

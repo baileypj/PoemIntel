@@ -1,4 +1,4 @@
-package http;
+package server;
 
 /**
  * A utility class for working with file types (i.e., extensions)

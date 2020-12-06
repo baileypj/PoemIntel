@@ -1,4 +1,4 @@
-package http;
+package server;
 
 /**
  * An abstract class that should be subclassed to create

@@ -1,15 +1,23 @@
-package http;
+package server;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 
-public class ListServlet extends AbstractHttpServlet
+/**
+ * The "default" servlet.
+ * This servlet handles "normal" GET and POST requests.
+ *
+ * @author Prof. David Bernstein, James Madison University
+ * @version 0.3
+ */
+public class DefaultHttpServlet extends AbstractHttpServlet
 {
-  public ListServlet()
+  public DefaultHttpServlet()
   {
     super();
   }
 
-  public ListServlet(HttpInputStream in, HttpOutputStream out)
+  public DefaultHttpServlet(HttpInputStream in, HttpOutputStream out)
   {
     super(in, out);
   }
@@ -18,8 +26,9 @@ public class ListServlet extends AbstractHttpServlet
   public void doGet(HttpRequest req, HttpResponse res)
   {
     byte[] content;
+    FileInputStream fis;
+    int length;
     MIMETyper mimeTyper;
-    NameValueMap queryParameters;
     SecurityManager security;
     String uri;
 
@@ -37,11 +46,15 @@ public class ListServlet extends AbstractHttpServlet
       if (security != null)
         security.checkRead(uri);
 
-      // Get query parameters
-      queryParameters = req.getQueryParameters();
+      // Create a stream for the file
+      // and determine its length
+      fis = new FileInputStream(uri);
+      length = fis.available();
 
-      // Set the content
-      content = ListResponseFactory.createGETResponse(queryParameters).getBytes();
+      // Read the file
+      content = new byte[length];
+      fis.read(content);
+      fis.close();
 
       // Set the status
       res.setStatus(HttpResponse.SC_OK);
@@ -63,6 +76,5 @@ public class ListServlet extends AbstractHttpServlet
     {
       res.sendError(HttpResponse.SC_NOT_FOUND, out);
     }
-
   }
 }

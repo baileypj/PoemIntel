@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import http.HttpServer;
+import server.HttpServer;
 
 public class PoemGETTest
 {

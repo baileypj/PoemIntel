@@ -1,4 +1,4 @@
-package http;
+package server;
 
 /**
  * The requirements of HTTP servlets.

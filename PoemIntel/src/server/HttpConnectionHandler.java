@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -77,6 +77,7 @@ public class HttpConnectionHandler implements Runnable
       }
       catch (Exception e)
       {
+        e.printStackTrace();
         response.sendError(HttpResponse.SC_BAD_REQUEST, out);
       }
     }

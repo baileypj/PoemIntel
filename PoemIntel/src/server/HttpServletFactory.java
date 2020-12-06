@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,7 +53,8 @@ public class HttpServletFactory
    * @param in The HttpInputStream to read from
    * @param out The HttpOutputStream to write to
    */
-  public HttpServlet createServlet(HttpRequest req, HttpInputStream in, HttpOutputStream out) throws Exception
+  public HttpServlet createServlet(HttpRequest req, HttpInputStream in, HttpOutputStream out)
+      throws Exception
   {
     HttpServlet servlet;
     String className, ext, fname;
@@ -66,7 +67,8 @@ public class HttpServletFactory
     servlet = null;
 
     // Get class of servlet from the associations.dat
-    Class<?> servlet_class = Class.forName("http." + className);
+    Class<?> servlet_class =
+        Class.forName("server." + className);
 
     // Get constructor for class of servlet
     Constructor<?> servlet_constructor =

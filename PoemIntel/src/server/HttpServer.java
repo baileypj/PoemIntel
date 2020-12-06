@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,11 +9,8 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.FileHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 /**
  * A simplified HTTP server
@@ -24,6 +21,10 @@ import java.util.logging.SimpleFormatter;
  */
 public class HttpServer implements Runnable
 {
+  protected static final String serverAddress = "127.0.0.1";
+  protected static final int serverPort = 8080;
+  protected static final String loggerName = "PoemIntelServer";
+
   private volatile boolean keepRunning;
   private final ExecutorService threadPool;
   private final ServerSocket serverSocket;
@@ -41,15 +42,11 @@ public class HttpServer implements Runnable
   {
     BufferedReader in;
     HttpServer server;
-    Handler logHandler;
 
     // Setup the logging system
-    logger = Logger.getLogger("PoemIntelServer");
+    logger = Logger.getLogger(loggerName);
     try
     {
-      logHandler = new FileHandler("log.txt");
-      logHandler.setFormatter(new SimpleFormatter());
-      logger.addHandler(logHandler);
       logger.setLevel(Level.parse(args[0]));
       logger.setUseParentHandlers(false);
     }
@@ -76,7 +73,7 @@ public class HttpServer implements Runnable
     }
     catch (IOException ioe)
     {
-      System.out.println("  Stopping because of an IOException");
+      System.out.println("Stopping because of an IOException");
     }
 
     // Stop the server
@@ -89,15 +86,12 @@ public class HttpServer implements Runnable
    */
   public HttpServer() throws IOException
   {
-    serverSocket = new ServerSocket(8080);
+    serverSocket = new ServerSocket(serverPort);
 
     // Setup the logging system
-    logger = Logger.getLogger("PoemIntelServer");
+    logger = Logger.getLogger(loggerName);
     try
     {
-      Handler logHandler = new FileHandler("log.txt");
-      logHandler.setFormatter(new SimpleFormatter());
-      logger.addHandler(logHandler);
       logger.setLevel(Level.FINE);
       logger.setUseParentHandlers(false);
     }
@@ -108,7 +102,7 @@ public class HttpServer implements Runnable
       logger.setUseParentHandlers(true);
     }
 
-    logger.log(Level.INFO, "Created Server Socket on 8080");
+    logger.log(Level.INFO, "Created Server Socket on " + serverPort);
 
     threadPool = Executors.newFixedThreadPool(MAX_THREADS);
 
@@ -171,7 +165,7 @@ public class HttpServer implements Runnable
         // Wait again
         if (!threadPool.awaitTermination(5, TimeUnit.SECONDS))
         {
-          logger.log(Level.INFO, "Could not stop thread pool.");
+          logger.log(Level.INFO, "Could not stop thread pool");
         }
       }
     }

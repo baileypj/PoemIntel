@@ -1,4 +1,4 @@
-package http;
+package server;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +34,8 @@ public class ListResponseFactory
       // Insert reference to TYPE-converting xsl file if specified
       // NOTE: we will only be doing text and html, but this leaves it open to more types.
       insert_content = ("<?xml version=\"1.0\"?>\r\n<?xml-stylesheet type=\"" + type
-          + "/xsl\" href=\"http://127.0.0.1:8080/list" + type + ".xsl\"?>\r\n\r\n").getBytes();
+          + "/xsl\" href=\"http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort
+          + "/list" + type + ".xsl\"?>\r\n\r\n").getBytes();
       insert_length = insert_content.length;
     }
     else
@@ -42,7 +43,8 @@ public class ListResponseFactory
       // Insert reference to html-converting xsl file if specified
       // NOTE: i'm not sure if xml-stylesheet type="html/xsl" is a valid type
       insert_content = ("<?xml version=\"1.0\"?>\r\n<?xml-stylesheet type=\"html/xsl\" href=\""
-          + "http://127.0.0.1:8080/listhtml.xsl\"?>\r\n\r\n").getBytes();
+          + "http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort
+          + "/listhtml.xsl\"?>\r\n\r\n").getBytes();
       insert_length = insert_content.length;
     }
 
