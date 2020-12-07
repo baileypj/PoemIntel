@@ -16,9 +16,6 @@
     <h2>
       <xsl:apply-templates select="pubInfo"/>
     </h2>
-    <h3>
-      Poem Identification Number: <xsl:value-of select="@poemid"/>
-    </h3>
     <body BGCOLOR="#D3D3D3">
       <xsl:apply-templates select="body"/>
     </body>
