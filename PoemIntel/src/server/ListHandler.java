@@ -13,10 +13,10 @@ public class ListHandler extends DefaultHandler
   private boolean foundResponse, authorSearch;
   private String title, author, year, body, searchYear, searchAuthor, waitingFor;
   private ArrayList<Poem> list;
-  
+
   /**
    * Constructor.
-   * 
+   *
    * @param searchTerm
    *          specific year or author to be searched for
    * @param authorSearch
@@ -39,19 +39,19 @@ public class ListHandler extends DefaultHandler
     this.body = "";
     list = new ArrayList<Poem>();
   }
-  
+
   public ArrayList<Poem> getList()
   {
     return list;
   }
-  
+
   @Override
   public void startDocument()
   {
     foundResponse = false;
     waitingFor = "";
   }
-  
+
   @Override
   public void startElement(String uri, String localName, String qName, Attributes attributes)
   {
@@ -105,7 +105,7 @@ public class ListHandler extends DefaultHandler
     if (waitingFor.equals("author_characters"))
     {
       author = new String(ch, start, length).trim();
-    } 
+    }
     else if (waitingFor.equals("year_characters"))
     {
       year = new String(ch, start, length).trim();
@@ -119,7 +119,7 @@ public class ListHandler extends DefaultHandler
       title = new String(ch, start, length).trim();
       foundResponse = true;
     }
-    
+
   }
 
 }

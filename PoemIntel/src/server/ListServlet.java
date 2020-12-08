@@ -2,6 +2,10 @@ package server;
 
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 public class ListServlet extends AbstractHttpServlet
 {
   public ListServlet()
@@ -63,6 +67,9 @@ public class ListServlet extends AbstractHttpServlet
     {
       res.sendError(HttpResponse.SC_NOT_FOUND, out);
     }
-
+    catch (SAXException | ParserConfigurationException e)
+    {
+      res.sendError(HttpResponse.SC_INTERNAL_ERROR, out);
+    }
   }
 }

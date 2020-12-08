@@ -78,7 +78,8 @@ public class FileTyper
         firstPeriod = 0;
     }
 
-    return name.substring(lastSlash, firstPeriod);
+    //lastSlash + 1 removes the slash
+    return name.substring(lastSlash + 1, firstPeriod);
   }
 
 }

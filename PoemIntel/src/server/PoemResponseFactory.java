@@ -1,46 +1,41 @@
 package server;
 
-import java.io.FileNotFoundException;
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+
+import poem.Poem;
 
 public class PoemResponseFactory
 {
-  public static String createGETResponse(String poemName, NameValueMap queryParameters) throws FileNotFoundException
+  public static String createGETResponse(NameValueMap queryParameters, String poemName)
+      throws IOException, ParserConfigurationException, SAXException
   {
-//    // Get poems from file
-//    FileInputStream fis = new FileInputStream(HttpServer.poemDatabase);
-//    byte[] file_content = new byte[fis.available()];
-//    fis.read(file_content);
-//    ByteArrayInputStream bais = new ByteArrayInputStream(file_content);
-//
-//    // Parse the poems file
-//    InputSource inputSource = new InputSource(bais);
-//    SAXParserFactory factory = SAXParserFactory.newInstance();
-//    SAXParser parser = factory.newSAXParser();
-//    PoemHandler handler = new PoemHandler(poemName);
-//    parser.parse(inputSource, handler);
-//
-//    // Get the poem
-//    Poem poem = poemHandler.getPoem();
-//    String poemString = poem.getPoemAsXML();
+    // Read the file
+    FileInputStream fis = new FileInputStream(HttpServer.poemDatabase);
+    byte[] file_content = new byte[fis.available()];
+    fis.read(file_content);
+    fis.close();
 
-    String poemString = "<poem\r\n" +
-        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n" +
-        "xsi:noNamespaceSchemaLocation=\"poem.xsd\">\r\n" +
-        "<pubInfo>\r\n" +
-        "    <title>Secrets Under Trees</title>\r\n" +
-        "    <author>Jessica Knight</author>\r\n" +
-        "    <year>2016</year>\r\n" +
-        "  </pubInfo>\r\n" +
-        "  <body>Tiny little secrets\r\n" +
-        "Get buried in the dirt,\r\n" +
-        "And if they were dug up,\r\n" +
-        "Someone would probably get hurt,\r\n" +
-        "So leave them safely there,\r\n" +
-        "To rot amongst the leaves,\r\n" +
-        "Admiring instead,\r\n" +
-        "The truth in summer's green trees.</body>\r\n" +
-        "</poem>\r\n";
+    // Parse the poems file
+    ByteArrayInputStream bais = new ByteArrayInputStream(file_content);
+    InputSource inputSource = new InputSource(bais);
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser parser = factory.newSAXParser();
+    PoemHandler handler = new PoemHandler(poemName);
+    parser.parse(inputSource, handler);
+
+    // Get the poem
+    Poem poem = handler.getPoem();
+    String poemString = poem.getPoemAsXML();
 
     // Get the poem content
     byte[] poem_content = poemString.getBytes();
@@ -56,16 +51,19 @@ public class PoemResponseFactory
     {
       // Insert reference to TYPE-converting xsl file if specified
       // NOTE: we will only be doing text and html, but this leaves it open to more types.
-      insert_content = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"" + type
-          + "/xsl\" href=\"http://127.0.0.1:8080/poem" + type + ".xsl\"?>\r\n\r\n").getBytes();
+      insert_content =
+          ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"text/xsl\" href=\""
+              + "http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort + "/list" + type
+              + ".xsl\"?>\r\n\r\n").getBytes();
       insert_length = insert_content.length;
     }
     else
     {
       // Insert reference to html-converting xsl file if specified
-      // NOTE: i'm not sure if xml-stylesheet type="html/xsl" is a valid type
-      insert_content = ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"text/xsl\" href=\""
-          + "http://127.0.0.1:8080/poemhtml.xsl\"?>\r\n\r\n").getBytes();
+      insert_content =
+          ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"text/xsl\" href=\""
+              + "http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort
+              + "/poemhtml.xsl\"?>\r\n\r\n").getBytes();
       insert_length = insert_content.length;
     }
 
@@ -81,11 +79,13 @@ public class PoemResponseFactory
     return new String(content, 0, content.length);
   }
 
-  public static String createPOSTResponse(String type, String uri)
+  public static String createPOSTResponse(NameValueMap queryParameters, String uri)
   {
-    String response;
+    // Get the insert reference type
+    String type = queryParameters.getValue("type");
 
     // Get response content
+    String response;
     if (type != null && type.equals("text"))
     {
       // Return text response if specified

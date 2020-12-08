@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<!-- definition of simple elements -->
+<xs:element name="title" type="xs:string"/>
+<xs:element name="author" type="xs:string"/>
+<xs:element name="year" type="xs:string"/>
+<xs:element name="body" type="xs:string"/>
+
+<!-- definition of complex elements -->
+<xs:element name="pubInfo">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="title" use="required"/>
+      <xs:element ref="author" use="required"/>
+      <xs:element ref="year" use="required"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+<xs:element name="poem">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element ref="pubInfo"/>
+      <xs:element ref="body"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+</xs:schema>

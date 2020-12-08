@@ -1,14 +1,17 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 <xsl:output method="text" indent="yes"/>
 
 <xsl:template match="/">
-    <xsl:apply-templates select="poem"/>
+    <xsl:apply-templates select="poems"/>
+  </xsl:template>
+
+  <xsl:template match="poems">
+	<xsl:apply-templates select="poem"/>
   </xsl:template>
 
   <xsl:template match="poem">
     <xsl:apply-templates select="pubInfo"/>
-
   </xsl:template>
 
   <xsl:template match="pubInfo">

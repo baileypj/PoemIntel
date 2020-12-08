@@ -2,6 +2,10 @@ package server;
 
 import java.io.IOException;
 
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.xml.sax.SAXException;
+
 public class PoemServlet extends AbstractHttpServlet
 {
   public PoemServlet()
@@ -36,14 +40,14 @@ public class PoemServlet extends AbstractHttpServlet
       if (security != null)
         security.checkRead(uri);
 
-      // Get poem name
+      // Get poem name (convert underscores to spaces)
       String poemName = FileTyper.getFileName(uri);
 
       // Get query parameters
       queryParameters = req.getQueryParameters();
 
       // Set the content
-      content = PoemResponseFactory.createGETResponse(poemName, queryParameters).getBytes();
+      content = PoemResponseFactory.createGETResponse(queryParameters, poemName).getBytes();
 
       // Set the status
       res.setStatus(HttpResponse.SC_OK);
@@ -64,6 +68,10 @@ public class PoemServlet extends AbstractHttpServlet
     catch (IOException ioe)
     {
       res.sendError(HttpResponse.SC_NOT_FOUND, out);
+    }
+    catch (SAXException | ParserConfigurationException e)
+    {
+      res.sendError(HttpResponse.SC_INTERNAL_ERROR, out);
     }
   }
 
@@ -98,10 +106,9 @@ public class PoemServlet extends AbstractHttpServlet
 
       // Get query parameters
       queryParameters = req.getQueryParameters();
-      String confirmationRequestType = queryParameters.getValue("type");
 
       // Set the content
-      content = PoemResponseFactory.createPOSTResponse(confirmationRequestType, uri).getBytes();
+      content = PoemResponseFactory.createPOSTResponse(queryParameters, uri).getBytes();
 
       // Set the status
       res.setStatus(HttpResponse.SC_OK);
