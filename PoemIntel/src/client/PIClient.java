@@ -120,36 +120,44 @@ public class PIClient {
 						is = s.getInputStream();
 						in = new HttpInputStream(is);
 						
+						//User enters poem name
 						System.out.println("Enter name of poem to get:");
 						String poemName = userIn.readLine();
 			            
 						//Request poem from server
 			            HttpRequest req = new HttpRequest();
 			            req.setMethod("GET");
-			            URI uri = new URI(poemName);
+			            URI uri = new URI(poemName.replaceAll(" ", "_") + ".poem");
 			            req.setURI(uri);
 			            req.write(out);
 
-			            //Receive poem from server
+			            //Receive response from server
 			            HttpResponse res = new HttpResponse();
 			            res.read(in);
 			            res.readContent(in);
 			            byte[] file_content = res.getContent();
-			            System.out.println(file_content);
-			            ByteArrayInputStream bais = new ByteArrayInputStream(file_content);
 			            
-			            // Parse the poems file
-			            InputSource inputSource = new InputSource(bais);
-			            SAXParserFactory factory = SAXParserFactory.newInstance();
-			            SAXParser parser = factory.newSAXParser();
-			            PoemHandler handler = new PoemHandler(poemName);
-			            parser.parse(inputSource, handler);
-			            
-
-			            // Get the poem
-			            Poem poem = handler.getPoem();
-			            PubInfo poem_info = poem.getPubInfo();
-			            System.out.printf("\nTitle: %s\nAuthor: %s\nYear: %s\n%s\n", poem_info.getTitle(), poem_info.getAuthor(), poem_info.getYear(), poem.getBody());
+			            //Check is request was successful
+			            if(res.getStatus() == 200)
+			            {
+			            	//Parse the poems file
+				            ByteArrayInputStream bais = new ByteArrayInputStream(file_content);
+				            InputSource inputSource = new InputSource(bais);
+				            SAXParserFactory factory = SAXParserFactory.newInstance();
+				            SAXParser parser = factory.newSAXParser();
+				            PoemHandler handler = new PoemHandler(poemName);
+				            parser.parse(inputSource, handler);
+				            
+	
+				            //Get the poem
+				            Poem poem = handler.getPoem();
+				            PubInfo poem_info = poem.getPubInfo();
+				            System.out.printf("\nTitle: %s\nAuthor: %s\nYear: %s\n%s\n", poem_info.getTitle(), poem_info.getAuthor(), poem_info.getYear(), poem.getBody());
+			            } 
+			            else
+			            {
+			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            }
 			            
 			            s.close();
 			            break;
