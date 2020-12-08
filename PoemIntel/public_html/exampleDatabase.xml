@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<poems>
+<poem>
+  <pubInfo>
+    <title>Client Poem One</title>
+    <author>John Smith</author>
+    <year>2016</year>
+  </pubInfo>
+  <body>This is a poem
+to test if a client
+can send an xml poem
+to a server
+and get a response
+from the server.</body>
+</poem>
+
+<poem>
+  <pubInfo>
+	<title>O, the Pelican</title>
+	<author>John Smith</author>
+	<year>2016</year>
+  </pubInfo>
+<body>O, the Pelican. So smoothly doth he crest. A wind god!</body>
+</poem>
+
+<poem>
+  <pubInfo>
+    <title>Secrets Under Trees</title>
+    <author>Jessica Knight</author>
+    <year>2020</year>
+  </pubInfo>
+  <body>Tiny little secrets Get buried in the dirt, And if they were dug up, Someone would probably get hurt, So leave them safely there, To rot amongst the leaves, Admiring instead, The truth in summer's green trees.</body>
+</poem>
+</poems>
