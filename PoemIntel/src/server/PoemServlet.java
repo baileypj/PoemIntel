@@ -40,7 +40,7 @@ public class PoemServlet extends AbstractHttpServlet
       if (security != null)
         security.checkRead(uri);
 
-      // Get poem name (convert underscores to spaces)
+      // Get poem name
       String poemName = FileTyper.getFileName(uri);
 
       // Get query parameters
@@ -100,15 +100,14 @@ public class PoemServlet extends AbstractHttpServlet
       // Get additional content
       req.readContent(in);
 
-      // Post / Update poems.xml
-      // TODO TODO TODO TODO
-      // MUST UPDATE POEMS HERE
+      // Get poem name
+      String poemName = FileTyper.getFileName(uri);
 
       // Get query parameters
       queryParameters = req.getQueryParameters();
 
       // Set the content
-      content = PoemResponseFactory.createPOSTResponse(queryParameters, uri).getBytes();
+      content = PoemResponseFactory.createPOSTResponse(queryParameters, poemName, req.getContent()).getBytes();
 
       // Set the status
       res.setStatus(HttpResponse.SC_OK);
@@ -129,6 +128,10 @@ public class PoemServlet extends AbstractHttpServlet
     catch (IOException ioe)
     {
       res.sendError(HttpResponse.SC_NOT_FOUND, out);
+    }
+    catch (ParserConfigurationException | SAXException e)
+    {
+      res.sendError(HttpResponse.SC_INTERNAL_ERROR, out);
     }
 
   }

@@ -77,7 +77,7 @@ public class HttpConnectionHandler implements Runnable
       }
       catch (Exception e)
       {
-        e.printStackTrace();
+        // e.printStackTrace();
         response.sendError(HttpResponse.SC_BAD_REQUEST, out);
       }
     }

@@ -2,6 +2,7 @@ package server;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class ListResponseFactory
     byte[] file_content = new byte[file_length];
 
     // removes header (HEADER WILL CONFLICT WITH HEADER ADDED DURING INSERT)
-    fis.read(file_content, 0, header_length);
+    fis.skip(header_length);
     fis.read(file_content, 0, file_length);
     fis.close();
 
@@ -63,11 +64,19 @@ public class ListResponseFactory
       // Gets the (filtered) list of poems from the handler
       ArrayList<Poem> poems = handler.getList();
 
-      // Creates the new filtered list as XML
-      String filteredList = "<poems>";
-      for (Poem poem : poems) filteredList += poem.getPoemAsXML();
-      filteredList += "</poems>";
-
+      String filteredList = "";
+      if (poems.size() == 0)
+      {
+        throw new FileNotFoundException();
+      }
+      else
+      {
+        // Creates the new filtered list as XML
+        filteredList = "<poems>";
+        for (Poem poem : poems)
+          filteredList += poem.getPoemAsXML();
+        filteredList += "</poems>";
+      }
       // Sets the file_content to the filtered list
       byte[] new_file_content = filteredList.getBytes();
       file_content = new_file_content;

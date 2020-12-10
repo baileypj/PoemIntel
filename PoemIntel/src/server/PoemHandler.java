@@ -8,10 +8,10 @@ import poem.PubInfo;
 
 public class PoemHandler extends DefaultHandler
 {
-  
+
   private boolean foundResponse;
   private String title, author, year, body, waitingFor;
-  
+
   public PoemHandler(String title)
   {
     this.title = title;
@@ -19,13 +19,16 @@ public class PoemHandler extends DefaultHandler
     this.year = "";
     this.body = "";
   }
-  
+
   public Poem getPoem()
   {
-    PubInfo pubInfo = new PubInfo(title, author, year);
-    return new Poem(pubInfo, body);
+    if(author.equals("") && year.equals("") && body.equals(""))
+    {
+      return null;
+    }
+    return new Poem(new PubInfo(title, author, year), body);
   }
-  
+
   @Override
   public void startDocument()
   {
@@ -61,7 +64,7 @@ public class PoemHandler extends DefaultHandler
     if (waitingFor.equals("author_characters"))
     {
       author = new String(ch, start, length).trim();
-    } 
+    }
     else if (waitingFor.equals("year_characters"))
     {
       year = new String(ch, start, length).trim();
@@ -78,7 +81,7 @@ public class PoemHandler extends DefaultHandler
         foundResponse = true;
       }
     }
-    
+
   }
 
 }

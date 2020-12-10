@@ -2,8 +2,11 @@ package server;
 
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.InvalidPropertiesFormatException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -33,8 +36,9 @@ public class PoemResponseFactory
     PoemHandler handler = new PoemHandler(poemName);
     parser.parse(inputSource, handler);
 
-    // Get the poem
+    // Get the poem, throw fnfexception if no poems match name
     Poem poem = handler.getPoem();
+    if(poem == null) throw new FileNotFoundException();
     String poemString = poem.getPoemAsXML();
 
     // Get the poem content
@@ -79,8 +83,29 @@ public class PoemResponseFactory
     return new String(content, 0, content.length);
   }
 
-  public static String createPOSTResponse(NameValueMap queryParameters, String uri)
+  public static String createPOSTResponse(NameValueMap queryParameters, String poemName, byte[] content) throws ParserConfigurationException, SAXException, IOException
   {
+    // CHECK XML AGAINST SCHEMA
+    // TODO TODO TODO TODO TODO
+
+    // Read the file
+    ByteArrayInputStream bais = new ByteArrayInputStream(content);
+    InputSource inputSource = new InputSource(bais);
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser parser = factory.newSAXParser();
+    PoemHandler handler = new PoemHandler(poemName);
+    parser.parse(inputSource, handler);
+
+    // Get the poem
+    Poem poem = handler.getPoem();
+    if(poem == null) throw new InvalidPropertiesFormatException("Poem is missing essential information");
+    String poemString = "\r\n\r\n" + poem.getPoemAsXML();
+
+    // Write the poem to the database
+    FileOutputStream fos = new FileOutputStream(HttpServer.poemDatabase, true);
+    fos.write(poemString.getBytes());
+    fos.close();
+
     // Get the insert reference type
     String type = queryParameters.getValue("type");
 
@@ -89,12 +114,12 @@ public class PoemResponseFactory
     if (type != null && type.equals("text"))
     {
       // Return text response if specified
-      response = String.format("%s has been updated");
+      response = String.format("\"%s\" has been posted");
     }
     else
     {
       // Return html response if specified
-      response = String.format("<html><body><p>%s has been updated</p></body></html>", uri);
+      response = String.format("<html><body><p>\"%s\" has been posted</p></body></html>", poemName);
     }
     return response;
   }
