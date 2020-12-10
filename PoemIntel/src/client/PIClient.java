@@ -29,9 +29,8 @@ import server.HttpResponse;
 import server.PoemHandler;
 
 /**
- * This is a basic PIClient. It will connect to the localHost IP on port 8080
- * every time. It will request a poem XML file from the server by name.
- * The file will be saved in this directory.
+ * The PIClient will give the user a number of options 
+ * for sending and receiving poem data from the server.
  *
  * This work complies with the JMU Honor Code.
  *
@@ -83,6 +82,11 @@ public class PIClient {
 		HttpOutputStream out;
 		InputStream is;
 		HttpInputStream in;
+		HttpRequest req;
+		URI uri;
+		HttpResponse res;
+		byte[] file_content;
+		Poem poem;
 		
 		try {
 			System.out.println("Welcome to the PoemIntel client!");
@@ -92,7 +96,7 @@ public class PIClient {
 			{
 				//List commands on screen
 				System.out.println("\nEnter one of the following commands:");
-				System.out.println("'upload'\tupload existing poem to server");
+				System.out.println("'upload'\tupload new poem to server");
 				System.out.println("'list'\tget a list of poems from server");
 				System.out.println("'get poem'\trequest specific poem from server");
 				System.out.println("'quit'\texit PoemIntel client\n");
@@ -107,7 +111,63 @@ public class PIClient {
 						System.out.println("Exiting PoemIntel client");
 						break;
 					case "upload":
-						System.out.println("Upload not yet implemented");
+						//get poem publication info
+						System.out.print("Enter the poem title: ");
+						String title = userIn.readLine();
+						System.out.print("Enter the poem author name: ");
+						String author = userIn.readLine();
+						System.out.print("Enter the poem year: ");
+						String year = userIn.readLine();
+						
+						
+						System.out.println("\nYou will now enter each line of the poem");
+						System.out.println("Type the contents of a line and press enter to proceed to the next line");
+						System.out.println("Type '/end' on its own line to indicate the end of the poem\n");
+						
+						//Poem body loop
+						String body = "";
+						String line = userIn.readLine();
+						while(!line.equals("/end"))
+						{
+							body = body + "\n" + line;
+							line = userIn.readLine();
+						}
+						
+						//construct the poem
+						poem = new Poem(new PubInfo(title, author, year), body);
+						
+						//Connect to server
+						s = new Socket(InetAddress.getLocalHost(), 8080);
+						os = s.getOutputStream();
+						out = new HttpOutputStream(os);
+						is = s.getInputStream();
+						in = new HttpInputStream(is);
+						
+						//Send poem to server
+			            req = new HttpRequest();
+			            req.setMethod("POST");
+			            uri = new URI(title.replaceAll(" ", "%20") + ".poem");
+			            req.setURI(uri);
+			            req.setContent(poem.getPoemAsXML().getBytes());
+			            req.write(out);
+			            
+			            //Receive response from server
+			            res = new HttpResponse();
+			            res.read(in);
+			            res.readContent(in);
+			            file_content = res.getContent();
+						
+			            //Check is request was successful
+			            if(res.getStatus() == 200)
+			            {
+				            System.out.print("\nPoem saved on server\n");
+			            } 
+			            else
+			            {
+			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            }
+			            
+			            s.close(); 
 						break;
 					case "list":
 						System.out.println("List not yet implemented");
@@ -125,17 +185,17 @@ public class PIClient {
 						String poemName = userIn.readLine();
 			            
 						//Request poem from server
-			            HttpRequest req = new HttpRequest();
+			            req = new HttpRequest();
 			            req.setMethod("GET");
-			            URI uri = new URI(poemName.replaceAll(" ", "_") + ".poem");
+			            uri = new URI(poemName.replaceAll(" ", "%20") + ".poem");
 			            req.setURI(uri);
 			            req.write(out);
 
 			            //Receive response from server
-			            HttpResponse res = new HttpResponse();
+			            res = new HttpResponse();
 			            res.read(in);
 			            res.readContent(in);
-			            byte[] file_content = res.getContent();
+			            file_content = res.getContent();
 			            
 			            //Check is request was successful
 			            if(res.getStatus() == 200)
@@ -150,7 +210,7 @@ public class PIClient {
 				            
 	
 				            //Get the poem
-				            Poem poem = handler.getPoem();
+				            poem = handler.getPoem();
 				            PubInfo poem_info = poem.getPubInfo();
 				            System.out.printf("\nTitle: %s\nAuthor: %s\nYear: %s\n%s\n", poem_info.getTitle(), poem_info.getAuthor(), poem_info.getYear(), poem.getBody());
 			            } 
