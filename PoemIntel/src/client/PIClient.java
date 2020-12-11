@@ -11,6 +11,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -87,6 +88,7 @@ public class PIClient {
 		HttpResponse res;
 		byte[] file_content;
 		Poem poem;
+		String uriText;
 		
 		try {
 			System.out.println("Welcome to the PoemIntel client!");
@@ -146,7 +148,8 @@ public class PIClient {
 						//Send poem to server
 			            req = new HttpRequest();
 			            req.setMethod("POST");
-			            uri = new URI(title.replaceAll(" ", "%20") + ".poem");
+			            uriText = "/" + title.replaceAll(" ", "%20") + ".poem";
+			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
 			            req.setContent(poem.getPoemAsXML().getBytes());
 			            req.write(out);
@@ -171,7 +174,7 @@ public class PIClient {
 						break;
 					case "list":
 						String useFilters = "";
-						String uriText = "poem.list?type=text";
+						uriText = "poem.list?type=text";
 						
 						//Ask if user wants to use filters
 						System.out.println("Would you like to apply any filters to the poem list? (y/n)");
@@ -215,7 +218,8 @@ public class PIClient {
 						//Request list from server
 			            req = new HttpRequest();
 			            req.setMethod("GET");
-			            uri = new URI(uriText.replaceAll(" ", "%20"));
+			            uriText = "/" + uriText.replaceAll(" ", "%20");
+			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
 			            req.write(out);
 			            
@@ -252,7 +256,8 @@ public class PIClient {
 						//Request poem from server
 			            req = new HttpRequest();
 			            req.setMethod("GET");
-			            uri = new URI(poemName.replaceAll(" ", "%20") + ".poem");
+			            uriText = "/" + poemName.replaceAll(" ", "+") + ".poem";
+			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
 			            req.write(out);
 
