@@ -170,7 +170,72 @@ public class PIClient {
 			            s.close(); 
 						break;
 					case "list":
-						System.out.println("List not yet implemented");
+						String useFilters = "";
+						String uriText = "poem.list?type=text";
+						
+						//Ask if user wants to use filters
+						System.out.println("Would you like to apply any filters to the poem list? (y/n)");
+						useFilters = userIn.readLine();
+						
+						//Make sure user entered valid response
+						while((!useFilters.equals("y")) && (!useFilters.equals("n")))
+						{
+							System.out.println("please enter 'y' for yes and 'n' for no");
+							useFilters = userIn.readLine();
+						}
+						
+						//Check user response
+						if(useFilters.equals("y"))
+						{
+							String userInput;
+							
+							System.out.println("Enter a value for each filter. Press enter without typing a value to skip filter");
+							System.out.print("Author:");
+							userInput = userIn.readLine();
+							if(!userInput.equals(""))
+							{
+								uriText = uriText + "&" + userInput;
+							}
+							
+							System.out.print("Year:");
+							userInput = userIn.readLine();
+							if(!userInput.equals(""))
+							{
+								uriText = uriText + "&" + userInput;
+							}
+						}
+						
+						//Connect to server
+						s = new Socket(InetAddress.getLocalHost(), 8080);
+						os = s.getOutputStream();
+						out = new HttpOutputStream(os);
+						is = s.getInputStream();
+						in = new HttpInputStream(is);
+						
+						//Request list from server
+			            req = new HttpRequest();
+			            req.setMethod("GET");
+			            uri = new URI(uriText.replaceAll(" ", "%20"));
+			            req.setURI(uri);
+			            req.write(out);
+			            
+			            //Receive response from server
+			            res = new HttpResponse();
+			            res.read(in);
+			            res.readContent(in);
+			            file_content = res.getContent();
+			            
+			            //Check is request was successful
+			            if(res.getStatus() == 200)
+			            {
+				            System.out.printf("\nPoem List:\n%s", new String(file_content, "US-ASCII"));
+			            } 
+			            else
+			            {
+			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            }
+			            
+			            s.close();
 						break;
 					case "get poem":
 						//Connect to server
