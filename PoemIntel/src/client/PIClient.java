@@ -194,14 +194,14 @@ public class PIClient {
 							userInput = userIn.readLine();
 							if(!userInput.equals(""))
 							{
-								uriText = uriText + "&" + userInput;
+								uriText = uriText + "&" + "author=" + userInput;
 							}
 							
 							System.out.print("Year:");
 							userInput = userIn.readLine();
 							if(!userInput.equals(""))
 							{
-								uriText = uriText + "&" + userInput;
+								uriText = uriText + "&" + "year=" + userInput;
 							}
 						}
 						
