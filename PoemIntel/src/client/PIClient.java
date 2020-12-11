@@ -2,7 +2,6 @@ package client;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -41,41 +40,6 @@ import server.PoemHandler;
 public class PIClient {
 
 	public static void main(String[] args) {
-        /*String poemName;
-        Socket s;
-
-        poemName = args[0];
-
-        try {
-            s = new Socket(InetAddress.getLocalHost(), 8080);
-
-            FileOutputStream fs = new FileOutputStream(poemName);
-            OutputStream os = s.getOutputStream();
-            HttpOutputStream out = new HttpOutputStream(os);
-            HttpRequest req = new HttpRequest();
-            byte[] b;
-
-
-            req.setMethod("GET");
-            URI uri = new URI(poemName);
-            req.setURI(uri);
-            req.write(out);
-
-            InputStream is = s.getInputStream();
-            b = is.readAllBytes();
-            s.close();
-            fs.write(b);
-            fs.close();
-
-
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }*/
-		
 		String command = "";
 		BufferedReader userIn = new BufferedReader(new InputStreamReader(System.in));
 		Socket s;
@@ -113,30 +77,61 @@ public class PIClient {
 						System.out.println("Exiting PoemIntel client");
 						break;
 					case "upload":
-						//get poem publication info
-						System.out.print("Enter the poem title: ");
-						String title = userIn.readLine();
-						System.out.print("Enter the poem author name: ");
-						String author = userIn.readLine();
-						System.out.print("Enter the poem year: ");
-						String year = userIn.readLine();
+						String newOrOld = "";
+						byte[] poemXML = new byte[0];
+						String title = "";
 						
+						//Ask if user wants to upload from clientPoems folder
+						System.out.println("Would you like to uplaod a prexisting poem file or create a new one?");
+						System.out.println("Enter 'new' for a new file or 'old' for a prexisting file");
+						newOrOld = userIn.readLine();
 						
-						System.out.println("\nYou will now enter each line of the poem");
-						System.out.println("Type the contents of a line and press enter to proceed to the next line");
-						System.out.println("Type '/end' on its own line to indicate the end of the poem\n");
-						
-						//Poem body loop
-						String body = "";
-						String line = userIn.readLine();
-						while(!line.equals("/end"))
+						//Make sure user entered valid response
+						while((!newOrOld.equals("new")) && (!newOrOld.equals("old")))
 						{
-							body = body + "\n" + line;
-							line = userIn.readLine();
+							System.out.println("please enter new or old");
+							newOrOld = userIn.readLine();
 						}
 						
-						//construct the poem
-						poem = new Poem(new PubInfo(title, author, year), body);
+						if(newOrOld.equals("new"))
+						{
+							//get poem publication info
+							System.out.print("Enter the poem title: ");
+							title = userIn.readLine();
+							System.out.print("Enter the poem author name: ");
+							String author = userIn.readLine();
+							System.out.print("Enter the poem year: ");
+							String year = userIn.readLine();
+							
+							
+							System.out.println("\nYou will now enter each line of the poem");
+							System.out.println("Type the contents of a line and press enter to proceed to the next line");
+							System.out.println("Type '/end' on its own line to indicate the end of the poem\n");
+							
+							//Poem body loop
+							String body = "";
+							String line = userIn.readLine();
+							while(!line.equals("/end"))
+							{
+								body = body + "\n" + line;
+								line = userIn.readLine();
+							}
+							
+							//construct the poem
+							poem = new Poem(new PubInfo(title, author, year), body);
+							
+							poemXML = poem.getPoemAsXML().getBytes();
+						}
+						else if(newOrOld.equals("old"))
+						{
+							System.out.println("Enter the poem title");
+							title = userIn.readLine();
+							System.out.println("Enter the filename for an xml poem in the clientPoems folder");
+							String file = userIn.readLine();
+							FileInputStream fis = new FileInputStream(file);
+							poemXML = fis.readAllBytes();
+							fis.close();
+						}
 						
 						//Connect to server
 						s = new Socket(InetAddress.getLocalHost(), 8080);
@@ -151,7 +146,7 @@ public class PIClient {
 			            uriText = "/" + title.replaceAll(" ", "%20") + ".poem";
 			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
-			            req.setContent(poem.getPoemAsXML().getBytes());
+			            req.setContent(poemXML);
 			            req.write(out);
 			            
 			            //Receive response from server
@@ -232,6 +227,18 @@ public class PIClient {
 			            //Check is request was successful
 			            if(res.getStatus() == 200)
 			            {
+							/*
+							 * //Transform File StreamSource program = new StreamSource(new
+							 * File("public_html/listtext")); ByteArrayOutputStream bos = new
+							 * ByteArrayOutputStream(65536); StreamResult result = new StreamResult(bos);
+							 * ByteArrayInputStream bis = new ByteArrayInputStream(file_content);
+							 * StreamSource source = new StreamSource(bis); TransformerFactory factory =
+							 * TransformerFactory.newInstance(); Transformer transformer =
+							 * factory.newTransformer(program); transformer.transform(source, result);
+							 * 
+							 * System.out.println(bos.toString());
+							 */
+			            	
 				            System.out.printf("\nPoem List:\n%s", new String(file_content, "US-ASCII"));
 			            } 
 			            else
