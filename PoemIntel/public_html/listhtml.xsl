@@ -30,10 +30,14 @@
   </xsl:template>
 
   <xsl:template match="title">
-       "<xsl:value-of select="." />"
-       <!-- Not sure which of these will work -->
-       <!--Poem Link: <a href="127.0.0.1:8080/"><xsl:value-of select=".".poem/></a>-->
-       <!--Poem Link: <a href="127.0.0.1:8080/<xsl:value-of select=".".poem/>"></a>-->
+      "<xsl:value-of select="." />"
+
+      <!-- Set a variable to hold the href link and title-->
+      <xsl:variable name="href"></xsl:variable>
+      <xsl:variable name="poem_title"><xsl:value-of select="." /></xsl:variable>
+
+      <a href="{$href}/{$poem_title}.poem">Link for <xsl:value-of select="." /></a>
+      <br/>
   </xsl:template>
 
   <xsl:template match="author">
