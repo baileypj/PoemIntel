@@ -65,7 +65,7 @@ public class PoemResponseFactory
       // NOTE: we will only be doing text and html, but this leaves it open to more types.
       insert_content =
           ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<?xml-stylesheet type=\"text/xsl\" href=\""
-              + "http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort + "/list" + type
+              + "http://" + HttpServer.serverAddress + ":" + HttpServer.serverPort + "/poem" + type
               + ".xsl\"?>\r\n\r\n").getBytes();
       insert_length = insert_content.length;
     }

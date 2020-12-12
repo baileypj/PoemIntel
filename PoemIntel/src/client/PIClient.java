@@ -14,9 +14,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -25,16 +22,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-
 import poem.Poem;
 import poem.PubInfo;
 import server.HttpInputStream;
 import server.HttpOutputStream;
 import server.HttpRequest;
 import server.HttpResponse;
-import server.PoemHandler;
 
 /**
  * The PIClient will give the user a number of options 
@@ -137,7 +130,8 @@ public class PIClient {
 							System.out.println("Enter the filename for an xml poem in the clientPoems folder");
 							String file = userIn.readLine();
 							FileInputStream fis = new FileInputStream(file);
-							poemXML = fis.readAllBytes();
+							poemXML = new byte[fis.available()];
+							fis.read(poemXML);
 							fis.close();
 						}
 						
@@ -232,39 +226,18 @@ public class PIClient {
 			            res.readContent(in);
 			            file_content = res.getContent();
 			            
+			            s.close();
+			            
 			            //Check is request was successful
 			            if(res.getStatus() == 200)
 			            {
-							/*
-							 * //Transform File StreamSource program = new StreamSource(new
-							 * File("public_html/listtext")); ByteArrayOutputStream bos = new
-							 * ByteArrayOutputStream(65536); StreamResult result = new StreamResult(bos);
-							 * ByteArrayInputStream bis = new ByteArrayInputStream(file_content);
-							 * StreamSource source = new StreamSource(bis); TransformerFactory factory =
-							 * TransformerFactory.newInstance(); Transformer transformer =
-							 * factory.newTransformer(program); transformer.transform(source, result);
-							 * 
-							 * System.out.println(bos.toString());
-							 */
-			            	ByteArrayInputStream bis = new ByteArrayInputStream(file_content);
-			            	StreamSource source = new StreamSource(bis);
-			            	TransformerFactory factory = TransformerFactory.newInstance();
-			            	Source xsl = factory.getAssociatedStylesheet(source, null, null, null);
-			            	bis.reset();
-			            	Transformer transformer = factory.newTransformer(xsl);
-			            	ByteArrayOutputStream bos = new ByteArrayOutputStream(65536);
-			            	StreamResult result = new StreamResult(bos);
-			            	transformer.transform(source, result);
-			            	
-			            	System.out.printf("\nPoem List:\n%s", bos.toString());
-				            //System.out.printf("\nPoem List:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nPoem List:\n%s", applyXsl(file_content));
 			            } 
 			            else
 			            {
 			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
 			            }
 			            
-			            s.close();
 						break;
 					case "get poem":
 						//Connect to server
@@ -281,7 +254,7 @@ public class PIClient {
 						//Request poem from server
 			            req = new HttpRequest();
 			            req.setMethod("GET");
-			            uriText = "/" + poemName.replaceAll(" ", "%20") + ".poem";
+			            uriText = "/" + poemName.replaceAll(" ", "%20") + ".poem?type=text";
 			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
 			            req.write(out);
@@ -292,29 +265,18 @@ public class PIClient {
 			            res.readContent(in);
 			            file_content = res.getContent();
 			            
-			            //Check is request was successful
+			            s.close();
+			            
+			            //Check if request was successful
 			            if(res.getStatus() == 200)
 			            {
-			            	//Parse the poems file
-				            ByteArrayInputStream bais = new ByteArrayInputStream(file_content);
-				            InputSource inputSource = new InputSource(bais);
-				            SAXParserFactory factory = SAXParserFactory.newInstance();
-				            SAXParser parser = factory.newSAXParser();
-				            PoemHandler handler = new PoemHandler(poemName);
-				            parser.parse(inputSource, handler);
-				            
-	
-				            //Get the poem
-				            poem = handler.getPoem();
-				            PubInfo poem_info = poem.getPubInfo();
-				            System.out.printf("\nTitle: %s\nAuthor: %s\nYear: %s\n%s\n", poem_info.getTitle(), poem_info.getAuthor(), poem_info.getYear(), poem.getBody());
+			            	System.out.println(applyXsl(file_content));
 			            } 
 			            else
 			            {
 			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
 			            }
 			            
-			            s.close();
 			            break;
 					default:
 						System.out.println("Invalid command");
@@ -327,10 +289,6 @@ public class PIClient {
 			e1.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
@@ -339,4 +297,25 @@ public class PIClient {
 		
 	}
 
+	private static String applyXsl(byte[] xmlBytes) throws TransformerException
+	{
+		//Create streams
+    	ByteArrayInputStream bis = new ByteArrayInputStream(xmlBytes);
+    	ByteArrayOutputStream bos = new ByteArrayOutputStream(65536);
+    	StreamSource source = new StreamSource(bis);
+    	StreamResult result = new StreamResult(bos);
+    	
+    	//Create factory
+    	TransformerFactory factory = TransformerFactory.newInstance();
+    	
+    	//Read xsl from server
+    	Source xsl = factory.getAssociatedStylesheet(source, null, null, null);
+    	bis.reset();
+    	
+    	//Perform Transformation
+    	Transformer transformer = factory.newTransformer(xsl);
+    	transformer.transform(source, result);
+    	
+    	return bos.toString();
+	}
 }
