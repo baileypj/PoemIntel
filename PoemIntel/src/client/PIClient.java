@@ -1,6 +1,7 @@
 package client;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,6 +17,13 @@ import java.net.UnknownHostException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -238,8 +246,18 @@ public class PIClient {
 							 * 
 							 * System.out.println(bos.toString());
 							 */
+			            	ByteArrayInputStream bis = new ByteArrayInputStream(file_content);
+			            	StreamSource source = new StreamSource(bis);
+			            	TransformerFactory factory = TransformerFactory.newInstance();
+			            	Source xsl = factory.getAssociatedStylesheet(source, null, null, null);
+			            	bis.reset();
+			            	Transformer transformer = factory.newTransformer(xsl);
+			            	ByteArrayOutputStream bos = new ByteArrayOutputStream(65536);
+			            	StreamResult result = new StreamResult(bos);
+			            	transformer.transform(source, result);
 			            	
-				            System.out.printf("\nPoem List:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nPoem List:\n%s", bos.toString());
+				            //System.out.printf("\nPoem List:\n%s", new String(file_content, "US-ASCII"));
 			            } 
 			            else
 			            {
@@ -263,7 +281,7 @@ public class PIClient {
 						//Request poem from server
 			            req = new HttpRequest();
 			            req.setMethod("GET");
-			            uriText = "/" + poemName.replaceAll(" ", "+") + ".poem";
+			            uriText = "/" + poemName.replaceAll(" ", "%20") + ".poem";
 			            uri = new URI(URLEncoder.encode(uriText, "utf-8"));
 			            req.setURI(uri);
 			            req.write(out);
@@ -312,6 +330,10 @@ public class PIClient {
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (TransformerConfigurationException e) {
+			e.printStackTrace();
+		} catch (TransformerException e) {
 			e.printStackTrace();
 		}
 		
