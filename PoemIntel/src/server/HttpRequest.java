@@ -55,8 +55,8 @@ public class HttpRequest extends HttpMessage
       path = null;
     else
       path = uri.getPath();
-    if ((path == null) || path.equals(""))
-      return "index.html";
+    if (path == null || path.equals("") || path.equals("index.html") || path.equals("/"))
+      return "poem.list";
     else
       return path;
   }
