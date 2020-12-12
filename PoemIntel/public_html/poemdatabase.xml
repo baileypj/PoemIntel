@@ -65,4 +65,30 @@ To rot amongst the leaves,
 Admiring instead,
 The truth in summer's green trees.</body>
 </poem>
+
+
+<poem
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="poem.xsd">
+<pubInfo>
+    <title>testpost</title>
+    <author>me</author>
+    <year>2020</year>
+  </pubInfo>
+  <body>yeah</body>
+</poem>
+
+
+
+<poem
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="poem.xsd">
+<pubInfo>
+    <title>Testschema</title>
+    <author>me</author>
+    <year>2021</year>
+  </pubInfo>
+  <body>yeah2</body>
+</poem>
+
 </poems>

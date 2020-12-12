@@ -23,8 +23,13 @@ public class HttpServer implements Runnable
 {
   protected static final String serverAddress = "127.0.0.1";
   protected static final int serverPort = 8080;
-  protected static final String loggerName = "PoemIntelServer";
+
   protected static final String poemDatabase = "public_html/poemdatabase.xml";
+  protected static final String poemSchema = "public_html/poem.xsd";
+
+  protected static final int maxPoemSize = 4096;
+
+  protected static final String loggerName = "PoemIntelServer";
 
   private volatile boolean keepRunning;
   private final ExecutorService threadPool;
