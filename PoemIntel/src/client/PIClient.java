@@ -40,8 +40,8 @@ import server.HttpResponse;
  *
  */
 public class PIClient {
-	private static final String address = "127.0.0.1";
-	private static final int port = 8080;
+	private static final String address = "stu.cs.jmu.edu";
+	private static final int port = 5040;
 
 	public static void main(String[] args) {
 		String command = "";

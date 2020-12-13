@@ -21,8 +21,8 @@ import java.util.logging.Logger;
  */
 public class HttpServer implements Runnable
 {
-  protected static final String serverAddress = "127.0.0.1";
-  protected static final int serverPort = 8080;
+  protected static final String serverAddress = "stu.cs.jmu.edu";
+  protected static final int serverPort = 5040;
 
   protected static final String poemDatabase = "public_html/poemdatabase.xml";
   protected static final String poemSchema = "public_html/poem.xsd";
