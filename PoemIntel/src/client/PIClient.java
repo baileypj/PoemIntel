@@ -3,6 +3,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -81,9 +82,10 @@ public class PIClient {
 						String newOrOld = "";
 						byte[] poemXML = new byte[0];
 						String title = "";
+						boolean fileNotFound = false;
 
 						//Ask if user wants to upload from clientPoems folder
-						System.out.println("Would you like to uplaod a prexisting poem file or create a new one?");
+						System.out.println("Would you like to upload a prexisting poem file or create a new one?");
 						System.out.println("Enter 'new' for a new file or 'old' for a prexisting file");
 						newOrOld = userIn.readLine();
 
@@ -125,16 +127,24 @@ public class PIClient {
 						}
 						else if(newOrOld.equals("old"))
 						{
-							System.out.println("Enter the poem title");
-							title = userIn.readLine();
 							System.out.println("Enter the filename for an xml poem in the clientPoems folder");
 							String file = userIn.readLine();
-							FileInputStream fis = new FileInputStream(file);
-							poemXML = new byte[fis.available()];
-							fis.read(poemXML);
-							fis.close();
+							FileInputStream fis;
+							try {
+								fis = new FileInputStream("clientPoems/" + file);
+								poemXML = new byte[fis.available()];
+								fis.read(poemXML);
+								fis.close();
+								title = file.substring(0, file.indexOf('.')).replaceAll("_", " ");
+							} catch (FileNotFoundException e) {
+								System.out.println("Could not find file");
+								fileNotFound = true;
+							}
 						}
 
+						if(fileNotFound) {
+							break;
+						}
 						//Connect to server
 						s = new Socket(InetAddress.getLocalHost(), 8080);
 						os = s.getOutputStream();
@@ -164,7 +174,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 			            s.close();
@@ -235,7 +245,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 						break;
@@ -274,7 +284,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 			            break;
@@ -285,13 +295,13 @@ public class PIClient {
 			}
 		} catch (UnknownHostException e1) {
 			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		} catch (TransformerConfigurationException e) {
 			e.printStackTrace();
 		} catch (TransformerException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
