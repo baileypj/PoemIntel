@@ -174,7 +174,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 			            s.close();
@@ -245,7 +245,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 						break;
@@ -284,7 +284,7 @@ public class PIClient {
 			            }
 			            else
 			            {
-			            	System.out.printf("\nError:\n%s", new String(file_content, "US-ASCII"));
+			            	System.out.printf("\nError:%s", HttpResponse.getStatusMessage(res.getStatus()));
 			            }
 
 			            break;
