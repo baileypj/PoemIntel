@@ -40,6 +40,8 @@ import server.HttpResponse;
  *
  */
 public class PIClient {
+	private static final String address = "127.0.0.1";
+	private static final int port = 8080;
 
 	public static void main(String[] args) {
 		String command = "";
@@ -146,7 +148,7 @@ public class PIClient {
 							break;
 						}
 						//Connect to server
-						s = new Socket(InetAddress.getLocalHost(), 8080);
+						s = new Socket(InetAddress.getByName(address), port);
 						os = s.getOutputStream();
 						out = new HttpOutputStream(os);
 						is = s.getInputStream();
@@ -216,7 +218,7 @@ public class PIClient {
 						}
 
 						//Connect to server
-						s = new Socket(InetAddress.getLocalHost(), 8080);
+						s = new Socket(InetAddress.getByName(address), port);
 						os = s.getOutputStream();
 						out = new HttpOutputStream(os);
 						is = s.getInputStream();
@@ -251,7 +253,7 @@ public class PIClient {
 						break;
 					case "get poem":
 						//Connect to server
-						s = new Socket(InetAddress.getLocalHost(), 8080);
+						s = new Socket(InetAddress.getByName(address), port);
 						os = s.getOutputStream();
 						out = new HttpOutputStream(os);
 						is = s.getInputStream();
