@@ -1,6 +1,7 @@
 package server;
 
 import java.io.IOException;
+import java.util.InvalidPropertiesFormatException;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -124,6 +125,10 @@ public class PoemServlet extends AbstractHttpServlet
     catch (SecurityException se)
     {
       res.sendError(HttpResponse.SC_FORBIDDEN, out);
+    }
+    catch (InvalidPropertiesFormatException ipfe)
+    {
+      res.sendError(HttpResponse.SC_BAD_REQUEST, out);
     }
     catch (IOException ioe)
     {
