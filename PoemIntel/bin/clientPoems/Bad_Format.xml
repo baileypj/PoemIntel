@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<poem
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="poem.xsd">
+  <pubInfo>
+    <title>Bad Format</title>
+    <year>2020</year>
+  </pubInfo>
+  <body>This is a poem
+to test if a client
+can send an xml poem
+to a server
+and get a response
+from the server.</body>
+</poem>
